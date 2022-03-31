@@ -40,7 +40,7 @@ void test_percentage_lower()
 
 void test_percentage_higher()
 {
-    TEST_ASSERT_EQUAL(1, isInUpperLowerPercentage(95, 100, 200));
+    TEST_ASSERT_EQUAL(1, isInUpperLowerPercentage(46, 0, 50));
 }
 
 void test_percentage_lower_edge()

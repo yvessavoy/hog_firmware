@@ -223,8 +223,7 @@ void vTaskUi(void *pvParameter)
                 state = State_Settings;
                 setActiveSettingsItem(&display, state_settings);
             }
-
-            if ((eventBits & NEW_DATA_BIT))
+            else if ((eventBits & NEW_DATA_BIT))
             {
                 if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
                 {

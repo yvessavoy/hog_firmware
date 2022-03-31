@@ -7,12 +7,12 @@
 #define TEMP_GREEN_PIN 34
 #define TEMP_YELLOW_PIN 35
 #define TEMP_RED_PIN 32
-#define HUMIDITY_GREEN_PIN 15
-#define HUMIDITY_YELLOW_PIN 2
-#define HUMIDITY_RED_PIN 4
-#define LIGHT_GREEN_PIN 14
-#define LIGHT_YELLOW_PIN 12
-#define LIGHT_RED_PIN 13
+#define HUMIDITY_GREEN_PIN 13
+#define HUMIDITY_YELLOW_PIN 12
+#define HUMIDITY_RED_PIN 14
+#define LIGHT_GREEN_PIN 2
+#define LIGHT_YELLOW_PIN 3
+#define LIGHT_RED_PIN 4
 #define CO2_GREEN_PIN 3
 #define CO2_YELLOW_PIN 1
 #define CO2_RED_PIN 19
@@ -23,6 +23,19 @@ void vTaskTraffic(void *pvParameters)
     DataItem_t xQueueItem;
     uint16_t min_val, max_val;
     uint8_t g_pin, y_pin, r_pin;
+
+    pinMode(TEMP_GREEN_PIN, OUTPUT);
+    pinMode(TEMP_YELLOW_PIN, OUTPUT);
+    pinMode(TEMP_RED_PIN, OUTPUT);
+    pinMode(HUMIDITY_GREEN_PIN, OUTPUT);
+    pinMode(HUMIDITY_YELLOW_PIN, OUTPUT);
+    pinMode(HUMIDITY_RED_PIN, OUTPUT);
+    pinMode(LIGHT_GREEN_PIN, OUTPUT);
+    pinMode(LIGHT_YELLOW_PIN, OUTPUT);
+    pinMode(LIGHT_RED_PIN, OUTPUT);
+    pinMode(CO2_GREEN_PIN, OUTPUT);
+    pinMode(CO2_YELLOW_PIN, OUTPUT);
+    pinMode(CO2_RED_PIN, OUTPUT);
 
     for (;;)
     {

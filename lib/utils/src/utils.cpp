@@ -39,8 +39,8 @@ void html_decode(char *source, char *target)
 int isInUpperLowerPercentage(int val, int min, int max)
 {
     int range = max - min;
-    int percentage_range = range / 100 * PERCENTAGE;
-    if (val < min + percentage_range || val > max - percentage_range)
+    float percentage_range = range / 100.0 * PERCENTAGE;
+    if ((val < min + percentage_range) || (val > max - percentage_range))
     {
         return 1;
     }
