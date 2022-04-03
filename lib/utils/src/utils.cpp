@@ -86,3 +86,16 @@ void getGrafanaUrlFromGetRequest(char *request, char *url)
         url[i] = *(ptr + i);
     }
 }
+
+void getCustomNameFromGetRequest(char *request, char *name)
+{
+    ptr = strstr(request, "custom_name=") + 12;
+    for (int i = 0; i < 50; i++)
+    {
+        if (*(ptr + i) == '&' || *(ptr + i) == ' ')
+        {
+            break;
+        }
+        name[i] = *(ptr + i);
+    }
+}

@@ -18,11 +18,13 @@ const long timeoutTime = 2000;
 char ssid[32];
 char password[63];
 char grafana_url[255];
+char custom_name[50];
 char d_ssid[32];
 char d_password[63];
 char s_ssid[32];
 char s_password[63];
 char d_grafana_url[255];
+char d_custom_name[50];
 uint8_t details_received = 0;
 
 const char *html =
@@ -34,9 +36,11 @@ const char *html =
     "<p>WLAN Name</p>"
     "<input name=\"wlan_name\" type=\"text\">"
     "<p>WLAN Passwort</p>"
-    "<input name=\"wlan_password\" type=\"text\">"
+    "<input name=\"wlan_password\" type=\"password\">"
     "<p>Grafana Server URL</p>"
     "<input name=\"grafana_url\" type=\"text\">"
+    "<p>Benutzerdefinierter Geraetename</p>"
+    "<input name=\"custom_name\" type=\"text\">"
     "<p></p>"
     "<input type=\"Submit\" value=\"Senden\">"
     "</form>"
@@ -119,14 +123,17 @@ void vTaskWlan(void *pvParameters)
                                     getSsidFromGetRequest(header, ssid);
                                     getPasswordFromGetRequest(header, password);
                                     getGrafanaUrlFromGetRequest(header, grafana_url);
+                                    getCustomNameFromGetRequest(header, custom_name);
 
                                     html_decode(ssid, d_ssid);
                                     html_decode(password, d_password);
                                     html_decode(grafana_url, d_grafana_url);
+                                    html_decode(custom_name, d_custom_name);
 
                                     storeWlanSsid(d_ssid);
                                     storeWlanPassword(d_password);
                                     storeGrafanaUrl(d_grafana_url);
+                                    storeCustomName(d_custom_name);
 
                                     details_received = 1;
                                 }

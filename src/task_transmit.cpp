@@ -13,12 +13,14 @@ void vTaskTransmitData(void *pvParameters)
     DataItem_t xQueueItem;
     char url[255];
     char stored_url[255];
-    char post_data[60];
+    char post_data[255];
     HTTPClient http;
     uint8_t post_data_length;
     char tech_device_name[13];
+    char custom_device_name[50];
 
-    uint64_t chipid = ESP.getEfuseMac(); // The chip ID is essentially its MAC address(length:6bytes)
+    retrieveCustomName(custom_device_name);
+    uint64_t chipid = ESP.getEfuseMac();
     snprintf(tech_device_name, 13, "%04X%08X", (uint16_t)(chipid >> 32), (uint32_t)chipid);
 
     for (;;)
@@ -37,16 +39,16 @@ void vTaskTransmitData(void *pvParameters)
             switch (xQueueItem.dataType)
             {
             case DT_Temperature:
-                snprintf(post_data, 60, "type=%s&value=%.2f&tech_device_name=%s", "temperature", xQueueItem.value, tech_device_name);
+                snprintf(post_data, 255, "type=%s&value=%.2f&tech_device_name=%s&custom_device_name=%s", "temperature", xQueueItem.value, tech_device_name, custom_device_name);
                 break;
             case DT_Humidity:
-                snprintf(post_data, 60, "type=%s&value=%.2f&tech_device_name=%s", "humidity", xQueueItem.value, tech_device_name);
+                snprintf(post_data, 255, "type=%s&value=%.2f&tech_device_name=%s&custom_device_name=%s", "humidity", xQueueItem.value, tech_device_name, custom_device_name);
                 break;
             case DT_Light:
-                snprintf(post_data, 60, "type=%s&value=%.2f&tech_device_name=%s", "light", xQueueItem.value, tech_device_name);
+                snprintf(post_data, 255, "type=%s&value=%.2f&tech_device_name=%s&custom_device_name=%s", "light", xQueueItem.value, tech_device_name, custom_device_name);
                 break;
             case DT_CO2:
-                snprintf(post_data, 60, "type=%s&value=%.2f&tech_device_name=%s", "co2", xQueueItem.value, tech_device_name);
+                snprintf(post_data, 255, "type=%s&value=%.2f&tech_device_name=%s&custom_device_name=%s", "co2", xQueueItem.value, tech_device_name, custom_device_name);
                 break;
             default:
                 break;

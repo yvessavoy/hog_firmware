@@ -179,3 +179,20 @@ uint8_t retrieveTimerSeconds()
 {
     return EEPROM.read(TIMER_SEC_ADDR);
 }
+
+void storeCustomName(char custom_name[50])
+{
+    for (uint8_t i = 0; i < 50; i++)
+    {
+        EEPROM.write(CUSTOM_NAME_ADDR + i, custom_name[i]);
+    }
+    EEPROM.commit();
+}
+
+void retrieveCustomName(char *custom_name)
+{
+    for (uint8_t i = 0; i < 50; i++)
+    {
+        custom_name[i] = EEPROM.read(CUSTOM_NAME_ADDR + i);
+    }
+}

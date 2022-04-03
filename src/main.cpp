@@ -3,6 +3,8 @@
 #include <Wire.h>
 #include <GxEPD2_BW.h>
 #include <WiFi.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #include "main.hpp"
 #include "task_ui.hpp"
@@ -24,6 +26,7 @@ Sgp40Params_t sgp40Params;
 TrafficParams_t trafficParams;
 IPAddress ap_ip;
 EventGroupHandle_t xEventGroup;
+TaskStatus_t xTaskStates[8];
 
 void setup()
 {
@@ -76,7 +79,7 @@ void setup()
 
   xTaskCreate(vTaskUi, "task_ui", configMINIMAL_STACK_SIZE + 1500, NULL, 3, NULL);
   xTaskCreate(vTaskUiReceiveData, "task_ui_receive", configMINIMAL_STACK_SIZE + 100, (void *)xQueueUi, 3, NULL);
-  xTaskCreate(vTaskTransmitData, "task_transmit_data", configMINIMAL_STACK_SIZE + 2000, (void *)&transmitParams, 2, NULL);
+  xTaskCreate(vTaskTransmitData, "task_transmit_data", configMINIMAL_STACK_SIZE + 2500, (void *)&transmitParams, 2, NULL);
   xTaskCreate(vTaskSgp40, "task_sgp40", configMINIMAL_STACK_SIZE + 500, (void *)&sgp40Params, 2, NULL);
   vTaskDelay(500 / portTICK_PERIOD_MS);
   xTaskCreate(vTaskBh1750, "task_bh1750", configMINIMAL_STACK_SIZE + 500, (void *)xDataQueue, 2, NULL);
@@ -88,5 +91,16 @@ void setup()
 
 void loop()
 {
-  vTaskDelay(portMAX_DELAY);
+  /*if (uxTaskGetSystemState(xTaskStates, 8, NULL) == 8)
+  {
+    for (int i = 0; i < 8; i++)
+    {
+      Serial.print("Task Name: ");
+      Serial.print(xTaskStates[i].pcTaskName);
+      Serial.print(", State: ");
+      Serial.println(xTaskStates[i].eCurrentState);
+    }
+  }*/
+
+  vTaskDelay(1000 / portTICK_PERIOD_MS);
 }

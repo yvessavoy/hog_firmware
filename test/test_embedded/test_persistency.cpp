@@ -90,6 +90,16 @@ void test_store_and_get_timer_values()
     TEST_ASSERT_EQUAL(seconds, retrieveTimerSeconds());
 }
 
+void test_store_and_get_custom_name()
+{
+    char name[50] = "Office_1";
+    char new_name[50];
+
+    storeCustomName(name);
+    retrieveCustomName(new_name);
+    TEST_ASSERT_EQUAL_STRING(name, new_name);
+}
+
 void setup()
 {
     delay(2000);
@@ -104,6 +114,7 @@ void setup()
     RUN_TEST(test_store_and_get_wlan_password);
     RUN_TEST(test_store_and_get_grafana_url);
     RUN_TEST(test_store_and_get_timer_values);
+    RUN_TEST(test_store_and_get_custom_name);
     UNITY_END();
 
     clearPersistency();

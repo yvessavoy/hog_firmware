@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define EEPROM_SIZE 369
+#define EEPROM_SIZE 419
 #define WLAN_SSID_ADDR 0
 #define WLAN_PW_ADDR 33
 #define MIN_TEMP_ADDR 99
@@ -17,6 +17,7 @@
 #define GRAFANA_URL_ADDR 111
 #define TIMER_MIN_ADDR 367
 #define TIMER_SEC_ADDR 368
+#define CUSTOM_NAME_ADDR 369
 
 void initPersistency();
 void clearPersistency();
@@ -49,5 +50,8 @@ void retrieveGrafanaUrl(char *url);
 void storeTimer(uint8_t minutes, uint8_t seconds);
 uint8_t retrieveTimerMinutes();
 uint8_t retrieveTimerSeconds();
+
+void storeCustomName(char custom_name[50]);
+void retrieveCustomName(char *custom_name);
 
 #endif
