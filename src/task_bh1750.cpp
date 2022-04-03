@@ -23,6 +23,8 @@ void vTaskBh1750(void *pvParameters)
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 
+    Serial.println("BH1750-Sensor OK");
+
     for (;;)
     {
         if (bh_sensor.measurementReady())

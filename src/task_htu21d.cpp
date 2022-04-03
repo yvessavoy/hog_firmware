@@ -26,6 +26,8 @@ void vTaskHtu21d(void *pvParameter)
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 
+    Serial.println("HTU21D-Sensor OK");
+
     for (;;)
     {
         float temp = htu.readTemperature();

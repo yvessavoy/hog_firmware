@@ -28,6 +28,8 @@ void vTaskSgp40(void *pvParameters)
         vTaskDelay(1000 / portTICK_PERIOD_MS);
     }
 
+    Serial.println("SGP40-Sensor OK");
+
     // Preheat time of SGP40: 10s
     vTaskDelay(10000 / portTICK_PERIOD_MS);
 

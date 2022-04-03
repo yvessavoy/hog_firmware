@@ -665,12 +665,12 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
     if (dataType & (1 << 0))
     {
         display->firstPage();
-        display->setPartialWindow(0, 45, 73, 25);
+        display->setPartialWindow(15, 47, 55, 16);
         do
         {
-            snprintf(buf, 10, "%.0f", measurements->temperature);
-            w = 16 * strlen(buf);
-            display->setCursor((72 - w) / 2, 45);
+            display->fillRect(45, 47, 3, 3, GxEPD_BLACK);
+            snprintf(buf, 10, "%.0f C", measurements->temperature);
+            display->setCursor(15, 47);
             display->print(buf);
         } while (display->nextPage());
 
@@ -680,12 +680,11 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
     if (dataType & (1 << 1))
     {
         display->firstPage();
-        display->setPartialWindow(75, 45, 73, 25);
+        display->setPartialWindow(95, 47, 45, 16);
         do
         {
             snprintf(buf, 10, "%.0f%%", measurements->humidity);
-            w = 16 * strlen(buf);
-            display->setCursor(75 + ((72 - w) / 2), 45);
+            display->setCursor(95, 47);
             display->print(buf);
         } while (display->nextPage());
 
@@ -695,22 +694,16 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
     if (dataType & (1 << 2))
     {
         display->firstPage();
-        display->setPartialWindow(0, 97, 73, 25);
+        display->setPartialWindow(10, 100, 55, 16);
         do
         {
-            snprintf(buf, 10, "%.0flx", measurements->light);
-            w = 16 * strlen(buf);
-            if ((72 - w) / 2 < 0)
-            {
-                x = 0;
-            }
-            else
-            {
-                x = (72 - w) / 2;
-            }
-
-            display->setCursor(x, 97);
+            snprintf(buf, 10, "%.0f", measurements->light);
+            display->setCursor(10, 100);
             display->print(buf);
+            display->setTextSize(1);
+            display->setCursor(50, 106);
+            display->print("lx");
+            display->setTextSize(2);
         } while (display->nextPage());
 
         dataType |= (0 << 2);
@@ -719,21 +712,16 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
     if (dataType & (1 << 3))
     {
         display->firstPage();
-        display->setPartialWindow(75, 97, 73, 25);
+        display->setPartialWindow(85, 100, 57, 16);
         do
         {
-            snprintf(buf, 10, "%.0f VOC", measurements->co2);
-            w = 16 * strlen(buf);
-            if ((72 - w) / 2 < 0)
-            {
-                x = 0;
-            }
-            else
-            {
-                x = (72 - w) / 2;
-            }
-            display->setCursor(75 + x, 97);
+            snprintf(buf, 10, "%.0f", measurements->co2);
+            display->setCursor(85, 100);
             display->print(buf);
+            display->setTextSize(1);
+            display->setCursor(125, 106);
+            display->print("VOC");
+            display->setTextSize(2);
         } while (display->nextPage());
 
         dataType |= (0 << 3);
@@ -743,16 +731,16 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
     {
 
         display->firstPage();
-        display->setPartialWindow(175, 45, 20, 20);
+        display->setPartialWindow(180, 47, 20, 20);
         do
         {
             if (measurements->sensor_status)
             {
-                drawArray(display, 175, 45, TICK, GxEPD_BLACK);
+                drawArray(display, 180, 47, TICK, GxEPD_BLACK);
             }
             else
             {
-                drawArray(display, 175, 45, CROSS, GxEPD_BLACK);
+                drawArray(display, 180, 47, CROSS, GxEPD_BLACK);
             }
         } while (display->nextPage());
     }
@@ -760,22 +748,22 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
     if (dataType & (1 << 5))
     {
         display->firstPage();
-        display->setPartialWindow(255, 45, 20, 20);
+        display->setPartialWindow(255, 47, 20, 20);
         do
         {
             if (measurements->wlan_status)
             {
-                drawArray(display, 255, 45, TICK, GxEPD_BLACK);
+                drawArray(display, 255, 47, TICK, GxEPD_BLACK);
             }
             else
             {
-                drawArray(display, 255, 45, CROSS, GxEPD_BLACK);
+                drawArray(display, 255, 47, CROSS, GxEPD_BLACK);
             }
         } while (display->nextPage());
 
         display->firstPage();
-        display->setPartialWindow(240, 97, 50, 30);
-        display->setCursor(240, 97);
+        display->setPartialWindow(237, 100, 50, 16);
+        display->setCursor(237, 100);
         do
         {
             display->print(measurements->error_code);
@@ -787,18 +775,18 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
     if (dataType & (1 << 6))
     {
         display->firstPage();
-        display->setPartialWindow(155, 97, 65, 25);
+        display->setPartialWindow(155, 100, 60, 16);
         do
         {
-            display->setCursor(155, 97);
+            display->setCursor(155, 100);
             snprintf(buf, 5, "%d%%", measurements->battery_level);
             display->print(buf);
-            drawArray(display, 205, 97, BATTERY, GxEPD_BLACK);
+            drawArray(display, 205, 100, BATTERY, GxEPD_BLACK);
         } while (display->nextPage());
 
         display->firstPage();
-        display->setPartialWindow(240, 97, 50, 30);
-        display->setCursor(240, 97);
+        display->setPartialWindow(237, 100, 50, 16);
+        display->setCursor(237, 100);
         do
         {
             display->print(measurements->error_code);
@@ -814,7 +802,7 @@ void drawMeasurement(Display *display, MeasurementType_t measurement_type)
     display->firstPage();
     do
     {
-        display->fillRect(30, 60, 235, 37, GxEPD_WHITE);
+        display->fillRect(30, 65, 235, 10, GxEPD_WHITE);
         display->drawRect(30, 60, 235, 37, GxEPD_BLACK);
         display->setCursor(35, 70);
 

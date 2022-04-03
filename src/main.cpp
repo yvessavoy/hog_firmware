@@ -31,6 +31,8 @@ void setup()
   Serial.begin(115200);
   vTaskDelay(500 / portTICK_PERIOD_MS);
 
+  setCpuFrequencyMhz(80);
+
   // Init I2C-bus
   Wire.begin();
 
@@ -44,10 +46,10 @@ void setup()
     storeMaxTemp(26);
     storeMinHumidity(30);
     storeMaxHumidity(60);
-    storeMinLight(500);
+    storeMinLight(100);
     storeMaxLight(9999);
     storeMinCO2(0);
-    storeMaxCO2(999);
+    storeMaxCO2(200);
     storeTimer(1, 0);
   }
 
@@ -82,12 +84,12 @@ void setup()
   vTaskDelay(500 / portTICK_PERIOD_MS);
   xTaskCreate(vTaskBh1750, "task_bh1750", configMINIMAL_STACK_SIZE + 500, (void *)xDataQueue, 2, NULL);
   vTaskDelay(500 / portTICK_PERIOD_MS);
-  xTaskCreate(vTaskHtu21d, "task_htu21d", configMINIMAL_STACK_SIZE + 300, (void *)&htu21dParams, 2, NULL);
+  xTaskCreate(vTaskHtu21d, "task_htu21d", configMINIMAL_STACK_SIZE + 800, (void *)&htu21dParams, 2, NULL);
   xTaskCreate(vTaskTraffic, "task_traffic", configMINIMAL_STACK_SIZE + 200, (void *)&trafficParams, 2, NULL);
   xTaskCreate(vTaskWlan, "task_wlan", configMINIMAL_STACK_SIZE + 1500, NULL, 3, NULL);
 }
 
 void loop()
 {
-  vTaskDelay(portMAX_DELAY);
+  vTaskDelay(500 / portTICK_PERIOD_MS);
 }
