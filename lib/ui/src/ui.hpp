@@ -16,6 +16,18 @@ typedef enum
 
 typedef enum
 {
+    TempHigh,
+    TempLow,
+    HumidityHigh,
+    HumidityLow,
+    LightHigh,
+    LightLow,
+    Co2Bad,
+    None
+} MeasurementType_t;
+
+typedef enum
+{
     Val_MaxTemp,
     Val_MinTemp,
     Val_MaxHum,
@@ -87,5 +99,6 @@ void updateTimerValue(Display *display, TimerValue_t *timerValue, uint8_t min_se
 void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t dataType);
 void updateWlanIP(Display *display, IPAddress *ip);
 void drawWlanActive(Display *display, uint8_t wlan_disconnect_yes);
+void drawMeasurement(Display *display, MeasurementType_t measurement_type);
 
 #endif

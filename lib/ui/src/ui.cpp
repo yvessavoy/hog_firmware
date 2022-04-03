@@ -1,9 +1,6 @@
 #include <string.h>
 #include "ui.hpp"
 
-char buf[10];
-int x, y, w, h;
-
 // Bitmaps for symbols
 #define SYMBOL_ROWS 15
 #define SYMBOL_COLS 11
@@ -97,6 +94,16 @@ int BATTERY[SYMBOL_ROWS][SYMBOL_COLS] = {
     {0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0},
     {0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0},
 };
+
+char buf[10];
+int x, y, w, h;
+char *TEMP_HIGH_TEXT = "! Heizung abschalten / Fenster oeffnen";
+char *TEMP_LOW_TEXT = "! Heizung einschalten / Fenster schliessen";
+char *HUM_HIGH_TEXT = "! Durchzug herstellen";
+char *HUM_LOW_TEXT = "! Durchzug herstellen";
+char *LIGHT_HIGH_TEXT = "! Licht dimmen";
+char *LIGHT_LOW_TEXT = "! Licht einschalten";
+char *AIR_QUALITY_LOW = "! Fenster oeffnen & lueften";
 
 void drawArray(Display *display, uint16_t x, uint16_t y, int data[SYMBOL_ROWS][SYMBOL_COLS], uint16_t color)
 {
@@ -799,6 +806,43 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
 
         dataType |= (0 << 6);
     }
+}
+
+void drawMeasurement(Display *display, MeasurementType_t measurement_type)
+{
+    display->setPartialWindow(30, 60, 235, 37);
+    display->firstPage();
+    do
+    {
+        display->fillRect(30, 60, 235, 37, GxEPD_WHITE);
+        display->drawRect(30, 60, 235, 37, GxEPD_BLACK);
+        display->setCursor(35, 70);
+
+        switch (measurement_type)
+        {
+        case TempHigh:
+            display->print(TEMP_HIGH_TEXT);
+            break;
+        case TempLow:
+            display->print(TEMP_LOW_TEXT);
+            break;
+        case HumidityHigh:
+            display->print(HUM_HIGH_TEXT);
+            break;
+        case HumidityLow:
+            display->print(HUM_LOW_TEXT);
+            break;
+        case LightHigh:
+            display->print(LIGHT_HIGH_TEXT);
+            break;
+        case LightLow:
+            display->print(LIGHT_LOW_TEXT);
+            break;
+        case Co2Bad:
+            display->print(AIR_QUALITY_LOW);
+            break;
+        }
+    } while (display->nextPage());
 }
 
 void drawWlanActive(Display *display, uint8_t wlan_disconnect_yes)

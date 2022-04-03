@@ -5,6 +5,7 @@
 #include "ui.hpp"
 #include "main.hpp"
 #include "persistence.hpp"
+#include "utils.hpp"
 
 #define CS_PIN 5
 #define DC_PIN 25
@@ -32,7 +33,9 @@ SemaphoreHandle_t xSemaphore;
 unsigned long btn1LastInterrupt;
 unsigned long btn2LastInterrupt;
 unsigned long btn3LastInterrupt;
-uint8_t wlan_disconnect_yes = 0;
+uint8_t wlan_disconnect_yes = 0, hide_message = 0;
+uint16_t min_val, max_val;
+uint8_t temp_status, hum_status, light_status, co2_status; // 0 = All OK, 1 = Too low, 2 = Too high
 
 // Measurements for home screen
 Measurements_t measurements;
@@ -147,24 +150,108 @@ void vTaskUiReceiveData(void *pvParameter)
             switch (xQueueItem.dataType)
             {
             case DT_Temperature:
+                min_val = retrieveMinTemp();
+                max_val = retrieveMaxTemp();
                 measurements.temperature = xQueueItem.value;
                 break;
 
             case DT_Humidity:
+                min_val = retrieveMinHumidity();
+                max_val = retrieveMaxHumidity();
                 measurements.humidity = xQueueItem.value;
                 break;
 
             case DT_Light:
+                min_val = retrieveMinLight();
+                max_val = retrieveMaxLight();
                 measurements.light = xQueueItem.value;
                 break;
 
             case DT_CO2:
+                min_val = retrieveMinCO2();
+                max_val = retrieveMaxCO2();
                 measurements.co2 = xQueueItem.value;
                 break;
 
             default:
                 break;
             }
+
+            if (xQueueItem.value > max_val)
+            {
+                switch (xQueueItem.dataType)
+                {
+                case DT_Temperature:
+                    temp_status = 2;
+                    break;
+
+                case DT_Humidity:
+                    hum_status = 2;
+                    break;
+
+                case DT_Light:
+                    light_status = 2;
+                    break;
+
+                case DT_CO2:
+                    co2_status = 2;
+                    break;
+
+                default:
+                    break;
+                }
+            }
+
+            if (xQueueItem.value < min_val)
+            {
+                switch (xQueueItem.dataType)
+                {
+                case DT_Temperature:
+                    temp_status = 1;
+                    break;
+
+                case DT_Humidity:
+                    hum_status = 1;
+                    break;
+
+                case DT_Light:
+                    light_status = 1;
+                    break;
+
+                case DT_CO2:
+                    co2_status = 1;
+                    break;
+
+                default:
+                    break;
+                }
+            }
+
+            if (min_val < xQueueItem.value && xQueueItem.value < max_val)
+            {
+                switch (xQueueItem.dataType)
+                {
+                case DT_Temperature:
+                    temp_status = 0;
+                    break;
+
+                case DT_Humidity:
+                    hum_status = 0;
+                    break;
+
+                case DT_Light:
+                    light_status = 0;
+                    break;
+
+                case DT_CO2:
+                    co2_status = 0;
+                    break;
+
+                default:
+                    break;
+                }
+            }
+
             xSemaphoreGive(xSemaphore);
         }
         xEventGroupSetBits(xEventGroup, NEW_DATA_BIT);
@@ -228,6 +315,49 @@ void vTaskUi(void *pvParameter)
                 if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
                 {
                     updateHomeValues(&display, &measurements, valueUpdateNeeded);
+
+                    if (temp_status == 1)
+                    {
+                        drawMeasurement(&display, TempLow);
+                        hide_message = 1;
+                    }
+                    else if (temp_status == 2)
+                    {
+                        drawMeasurement(&display, TempHigh);
+                        hide_message = 1;
+                    }
+                    else if (hum_status == 1)
+                    {
+                        drawMeasurement(&display, HumidityLow);
+                        hide_message = 1;
+                    }
+                    else if (hum_status == 2)
+                    {
+                        drawMeasurement(&display, HumidityHigh);
+                        hide_message = 1;
+                    }
+                    else if (light_status == 1)
+                    {
+                        drawMeasurement(&display, LightLow);
+                        hide_message = 1;
+                    }
+                    else if (light_status == 2)
+                    {
+                        drawMeasurement(&display, LightHigh);
+                        hide_message = 1;
+                    }
+                    else if (co2_status > 0)
+                    {
+                        drawMeasurement(&display, Co2Bad);
+                        hide_message = 1;
+                    }
+                    else if (hide_message == 1)
+                    {
+                        hide_message = 0;
+                        drawHomeLayout(&display);
+                        updateHomeValues(&display, &measurements, 0xFF);
+                    }
+
                     xSemaphoreGive(xSemaphore);
                 }
             }

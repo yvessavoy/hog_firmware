@@ -3,8 +3,6 @@
 #include <Wire.h>
 #include <GxEPD2_BW.h>
 #include <WiFi.h>
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
 
 #include "main.hpp"
 #include "task_ui.hpp"
@@ -91,16 +89,5 @@ void setup()
 
 void loop()
 {
-  /*if (uxTaskGetSystemState(xTaskStates, 8, NULL) == 8)
-  {
-    for (int i = 0; i < 8; i++)
-    {
-      Serial.print("Task Name: ");
-      Serial.print(xTaskStates[i].pcTaskName);
-      Serial.print(", State: ");
-      Serial.println(xTaskStates[i].eCurrentState);
-    }
-  }*/
-
-  vTaskDelay(1000 / portTICK_PERIOD_MS);
+  vTaskDelay(portMAX_DELAY);
 }
