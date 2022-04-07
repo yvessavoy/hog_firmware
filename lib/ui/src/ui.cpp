@@ -798,6 +798,7 @@ void updateHomeValues(Display *display, Measurements_t *measurements, uint8_t da
 
 void drawMeasurement(Display *display, MeasurementType_t measurement_type)
 {
+    display->setTextSize(1);
     display->setPartialWindow(30, 60, 235, 37);
     display->firstPage();
     do
@@ -831,6 +832,7 @@ void drawMeasurement(Display *display, MeasurementType_t measurement_type)
             break;
         }
     } while (display->nextPage());
+    display->setTextSize(2);
 }
 
 void drawWlanActive(Display *display, uint8_t wlan_disconnect_yes)

@@ -77,16 +77,16 @@ void setup()
 
   trafficParams.xTrafficQueue = xTrafficQueue;
 
-  xTaskCreate(vTaskUi, "task_ui", configMINIMAL_STACK_SIZE + 1500, NULL, 3, NULL);
-  xTaskCreate(vTaskUiReceiveData, "task_ui_receive", configMINIMAL_STACK_SIZE + 100, (void *)xQueueUi, 3, NULL);
-  xTaskCreate(vTaskTransmitData, "task_transmit_data", configMINIMAL_STACK_SIZE + 2500, (void *)&transmitParams, 2, NULL);
+  xTaskCreate(vTaskUi, "task_ui", configMINIMAL_STACK_SIZE + 1500, NULL, 5, NULL);
+  xTaskCreate(vTaskUiReceiveData, "task_ui_receive", configMINIMAL_STACK_SIZE + 100, (void *)xQueueUi, 5, NULL);
+  xTaskCreate(vTaskTransmitData, "task_transmit_data", configMINIMAL_STACK_SIZE + 2500, (void *)&transmitParams, 3, NULL);
   xTaskCreate(vTaskSgp40, "task_sgp40", configMINIMAL_STACK_SIZE + 500, (void *)&sgp40Params, 2, NULL);
   vTaskDelay(500 / portTICK_PERIOD_MS);
   xTaskCreate(vTaskBh1750, "task_bh1750", configMINIMAL_STACK_SIZE + 500, (void *)xDataQueue, 2, NULL);
   vTaskDelay(500 / portTICK_PERIOD_MS);
   xTaskCreate(vTaskHtu21d, "task_htu21d", configMINIMAL_STACK_SIZE + 800, (void *)&htu21dParams, 2, NULL);
   xTaskCreate(vTaskTraffic, "task_traffic", configMINIMAL_STACK_SIZE + 200, (void *)&trafficParams, 2, NULL);
-  xTaskCreate(vTaskWlan, "task_wlan", configMINIMAL_STACK_SIZE + 1500, NULL, 3, NULL);
+  xTaskCreate(vTaskWlan, "task_wlan", configMINIMAL_STACK_SIZE + 1500, NULL, 4, NULL);
 }
 
 void loop()

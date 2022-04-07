@@ -82,179 +82,188 @@ void vTaskUiReceiveData(void *pvParameter)
 
     for (;;)
     {
-        xQueueReceive(dataQueue, &xQueueItem, portMAX_DELAY);
-        if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
+        if (uxQueueMessagesWaiting(dataQueue) >= 4)
         {
-            valueUpdateNeeded |= (1 << xQueueItem.dataType);
             eb = xEventGroupGetBits(xEventGroup);
-
-            // Check WLAN status
-            if ((eb & WLAN_OK_BIT) && (WiFi.status() == WL_CONNECTED) && (eb & SERVER_REACHABLE) && measurements.wlan_status == 0)
+            if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
             {
-                valueUpdateNeeded |= (1 << DT_WlanStatus);
-                measurements.wlan_status = 1;
-                strcpy(measurements.error_code, " ");
-            }
-
-            if (measurements.wlan_status == 1 && (!(eb & WLAN_OK_BIT) || !(eb & SERVER_REACHABLE) || WiFi.status() != WL_CONNECTED))
-            {
-                valueUpdateNeeded |= (1 << DT_WlanStatus);
-                measurements.wlan_status = 0;
-            }
-
-            // Check if sensor status is OK
-            if ((eb & TEMP_SENSOR_OK_BIT) && (eb & HUM_SENSOR_OK_BIT) && (eb & LIGHT_SENSOR_OK_BIT) && (eb & CO2_SENSOR_OK_BIT) && measurements.sensor_status == 0)
-            {
-                valueUpdateNeeded |= (1 << DT_SensorStatus);
-                measurements.sensor_status = 1;
-                strcpy(measurements.error_code, " ");
-            }
-
-            // Check if sensor status is NOK
-            if (measurements.sensor_status == 1 && (!(eb & TEMP_SENSOR_OK_BIT) || !(eb & HUM_SENSOR_OK_BIT) || !(eb & LIGHT_SENSOR_OK_BIT) || !(eb & CO2_SENSOR_OK_BIT)))
-            {
-                valueUpdateNeeded |= (1 << DT_SensorStatus);
-                measurements.sensor_status = 0;
-            }
-
-            // Set correct error text
-            if (!(eb & TEMP_SENSOR_OK_BIT))
-            {
-                strcpy(measurements.error_code, "S001");
-            }
-            else if (!(eb & HUM_SENSOR_OK_BIT))
-            {
-                strcpy(measurements.error_code, "S002");
-            }
-            else if (!(eb & LIGHT_SENSOR_OK_BIT))
-            {
-                strcpy(measurements.error_code, "S003");
-            }
-            else if (!(eb & CO2_SENSOR_OK_BIT))
-            {
-                strcpy(measurements.error_code, "S004");
-            }
-            else if (WiFi.status() == WL_NO_SSID_AVAIL)
-            {
-                strcpy(measurements.error_code, "W001");
-            }
-            else if (WiFi.status() == WL_CONNECT_FAILED)
-            {
-                strcpy(measurements.error_code, "W002");
-            }
-            else if (!(eb & SERVER_REACHABLE))
-            {
-                strcpy(measurements.error_code, "W003");
-            }
-
-            switch (xQueueItem.dataType)
-            {
-            case DT_Temperature:
-                min_val = retrieveMinTemp();
-                max_val = retrieveMaxTemp();
-                measurements.temperature = xQueueItem.value;
-                break;
-
-            case DT_Humidity:
-                min_val = retrieveMinHumidity();
-                max_val = retrieveMaxHumidity();
-                measurements.humidity = xQueueItem.value;
-                break;
-
-            case DT_Light:
-                min_val = retrieveMinLight();
-                max_val = retrieveMaxLight();
-                measurements.light = xQueueItem.value;
-                break;
-
-            case DT_CO2:
-                min_val = retrieveMinCO2();
-                max_val = retrieveMaxCO2();
-                measurements.co2 = xQueueItem.value;
-                break;
-
-            default:
-                break;
-            }
-
-            if (xQueueItem.value > max_val)
-            {
-                switch (xQueueItem.dataType)
+                // Check WLAN status
+                if ((eb & WLAN_OK_BIT) && (WiFi.status() == WL_CONNECTED) && (eb & SERVER_REACHABLE) && measurements.wlan_status == 0)
                 {
-                case DT_Temperature:
-                    temp_status = 2;
-                    break;
-
-                case DT_Humidity:
-                    hum_status = 2;
-                    break;
-
-                case DT_Light:
-                    light_status = 2;
-                    break;
-
-                case DT_CO2:
-                    co2_status = 2;
-                    break;
-
-                default:
-                    break;
+                    valueUpdateNeeded |= (1 << DT_WlanStatus);
+                    measurements.wlan_status = 1;
+                    strcpy(measurements.error_code, " ");
                 }
-            }
 
-            if (xQueueItem.value < min_val)
-            {
-                switch (xQueueItem.dataType)
+                if (measurements.wlan_status == 1 && (!(eb & WLAN_OK_BIT) || !(eb & SERVER_REACHABLE) || WiFi.status() != WL_CONNECTED))
                 {
-                case DT_Temperature:
-                    temp_status = 1;
-                    break;
-
-                case DT_Humidity:
-                    hum_status = 1;
-                    break;
-
-                case DT_Light:
-                    light_status = 1;
-                    break;
-
-                case DT_CO2:
-                    co2_status = 1;
-                    break;
-
-                default:
-                    break;
+                    valueUpdateNeeded |= (1 << DT_WlanStatus);
+                    measurements.wlan_status = 0;
                 }
-            }
 
-            if (min_val < xQueueItem.value && xQueueItem.value < max_val)
-            {
-                switch (xQueueItem.dataType)
+                // Check if sensor status is OK
+                if ((eb & TEMP_SENSOR_OK_BIT) && (eb & HUM_SENSOR_OK_BIT) && (eb & LIGHT_SENSOR_OK_BIT) && (eb & CO2_SENSOR_OK_BIT) && measurements.sensor_status == 0)
                 {
-                case DT_Temperature:
-                    temp_status = 0;
-                    break;
-
-                case DT_Humidity:
-                    hum_status = 0;
-                    break;
-
-                case DT_Light:
-                    light_status = 0;
-                    break;
-
-                case DT_CO2:
-                    co2_status = 0;
-                    break;
-
-                default:
-                    break;
+                    valueUpdateNeeded |= (1 << DT_SensorStatus);
+                    measurements.sensor_status = 1;
+                    strcpy(measurements.error_code, " ");
                 }
-            }
 
-            xSemaphoreGive(xSemaphore);
+                // Check if sensor status is NOK
+                if (measurements.sensor_status == 1 && (!(eb & TEMP_SENSOR_OK_BIT) || !(eb & HUM_SENSOR_OK_BIT) || !(eb & LIGHT_SENSOR_OK_BIT) || !(eb & CO2_SENSOR_OK_BIT)))
+                {
+                    valueUpdateNeeded |= (1 << DT_SensorStatus);
+                    measurements.sensor_status = 0;
+                }
+
+                // Set correct error text
+                if (!(eb & TEMP_SENSOR_OK_BIT))
+                {
+                    strcpy(measurements.error_code, "S001");
+                }
+                else if (!(eb & HUM_SENSOR_OK_BIT))
+                {
+                    strcpy(measurements.error_code, "S002");
+                }
+                else if (!(eb & LIGHT_SENSOR_OK_BIT))
+                {
+                    strcpy(measurements.error_code, "S003");
+                }
+                else if (!(eb & CO2_SENSOR_OK_BIT))
+                {
+                    strcpy(measurements.error_code, "S004");
+                }
+                else if (WiFi.status() == WL_NO_SSID_AVAIL)
+                {
+                    strcpy(measurements.error_code, "W001");
+                }
+                else if (WiFi.status() == WL_CONNECT_FAILED)
+                {
+                    strcpy(measurements.error_code, "W002");
+                }
+                else if (!(eb & SERVER_REACHABLE))
+                {
+                    strcpy(measurements.error_code, "W003");
+                }
+
+                while (uxQueueMessagesWaiting(dataQueue) > 0)
+                {
+                    xQueueReceive(dataQueue, &xQueueItem, portMAX_DELAY);
+                    valueUpdateNeeded |= (1 << xQueueItem.dataType);
+
+                    switch (xQueueItem.dataType)
+                    {
+                    case DT_Temperature:
+                        min_val = retrieveMinTemp();
+                        max_val = retrieveMaxTemp();
+                        measurements.temperature = xQueueItem.value;
+                        break;
+
+                    case DT_Humidity:
+                        min_val = retrieveMinHumidity();
+                        max_val = retrieveMaxHumidity();
+                        measurements.humidity = xQueueItem.value;
+                        break;
+
+                    case DT_Light:
+                        min_val = retrieveMinLight();
+                        max_val = retrieveMaxLight();
+                        measurements.light = xQueueItem.value;
+                        break;
+
+                    case DT_CO2:
+                        min_val = retrieveMinCO2();
+                        max_val = retrieveMaxCO2();
+                        measurements.co2 = xQueueItem.value;
+                        break;
+
+                    default:
+                        break;
+                    }
+
+                    if (xQueueItem.value > max_val)
+                    {
+                        switch (xQueueItem.dataType)
+                        {
+                        case DT_Temperature:
+                            temp_status = 2;
+                            break;
+
+                        case DT_Humidity:
+                            hum_status = 2;
+                            break;
+
+                        case DT_Light:
+                            light_status = 2;
+                            break;
+
+                        case DT_CO2:
+                            co2_status = 2;
+                            break;
+
+                        default:
+                            break;
+                        }
+                    }
+
+                    if (xQueueItem.value < min_val)
+                    {
+                        switch (xQueueItem.dataType)
+                        {
+                        case DT_Temperature:
+                            temp_status = 1;
+                            break;
+
+                        case DT_Humidity:
+                            hum_status = 1;
+                            break;
+
+                        case DT_Light:
+                            light_status = 1;
+                            break;
+
+                        case DT_CO2:
+                            co2_status = 1;
+                            break;
+
+                        default:
+                            break;
+                        }
+                    }
+
+                    if (min_val < xQueueItem.value && xQueueItem.value < max_val)
+                    {
+                        switch (xQueueItem.dataType)
+                        {
+                        case DT_Temperature:
+                            temp_status = 0;
+                            break;
+
+                        case DT_Humidity:
+                            hum_status = 0;
+                            break;
+
+                        case DT_Light:
+                            light_status = 0;
+                            break;
+
+                        case DT_CO2:
+                            co2_status = 0;
+                            break;
+
+                        default:
+                            break;
+                        }
+                    }
+                }
+                xEventGroupSetBits(xEventGroup, NEW_DATA_BIT);
+                xSemaphoreGive(xSemaphore);
+            }
         }
-        xEventGroupSetBits(xEventGroup, NEW_DATA_BIT);
+        else
+        {
+            vTaskDelay(1000 / portTICK_PERIOD_MS);
+        }
     }
 }
 
@@ -286,6 +295,7 @@ void vTaskUi(void *pvParameter)
 
     setupDisplay(&display);
     drawHomeLayout(&display);
+    updateHomeValues(&display, &measurements, 0xFF);
 
     // Setup button pins and interrupts
     pinMode(BTN_LEFT_UP_PIN, INPUT);

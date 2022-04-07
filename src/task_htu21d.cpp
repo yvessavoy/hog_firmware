@@ -15,6 +15,7 @@ void vTaskHtu21d(void *pvParameter)
     DataItem_t xQueueItem;
     TempHumQueueItem_t tempHumItem;
     TickType_t xLastWakeTime = xTaskGetTickCount();
+    float temp, rel_hum;
 
     xEventGroupSetBits(xEventGroup, TEMP_SENSOR_OK_BIT | HUM_SENSOR_OK_BIT);
 
@@ -30,8 +31,8 @@ void vTaskHtu21d(void *pvParameter)
 
     for (;;)
     {
-        float temp = htu.readTemperature();
-        float rel_hum = htu.readHumidity();
+        temp = htu.readTemperature();
+        rel_hum = htu.readHumidity();
 
         if (temp != 0.0f)
         {
