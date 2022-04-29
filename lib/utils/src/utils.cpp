@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #include <string.h>
 #include <ctype.h>
 #include "utils.hpp"

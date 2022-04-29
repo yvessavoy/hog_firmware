@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #include <WiFi.h>
 #include <string.h>
 #include "task_wlan.hpp"

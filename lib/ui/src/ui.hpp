@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #ifndef _UI_H
 #define _UI_H
 

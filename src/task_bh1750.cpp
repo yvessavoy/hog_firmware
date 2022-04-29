@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #include <Wire.h>
 #include <BH1750.h>
 #include "task_bh1750.hpp"

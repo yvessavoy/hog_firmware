@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #include <Arduino.h>
 #include <unity.h>
 #include "persistence.hpp"

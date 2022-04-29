@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #ifndef _TASK_TRAFFIC_H
 #define _TASK_TRAFFIC_H
 

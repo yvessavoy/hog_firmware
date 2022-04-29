@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #include "main.hpp"
 #include "task_htu21d.hpp"
 #include "Adafruit_HTU21DF.h"

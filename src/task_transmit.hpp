@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #ifndef _TASK_TRANSMIT_H
 #define _TASK_TRANSMIT_H
 

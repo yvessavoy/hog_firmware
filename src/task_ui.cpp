@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #include <GxEPD2_BW.h>
 #include <WiFi.h>
 

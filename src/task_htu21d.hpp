@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #ifndef _TASK_HTU21D_H
 #define _TASK_HTU21D_H
 

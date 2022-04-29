@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #ifndef _PERSISTENCE_H
 #define _PERSISTENCE_H
 

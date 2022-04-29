@@ -1,3 +1,8 @@
+/*
+Autor: Yves Savoy
+Klassifizierung: Selbst erzeugt
+*/
+
 #include <Arduino.h>
 #include "main.hpp"
 #include "task_traffic.hpp"
