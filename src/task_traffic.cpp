@@ -7,14 +7,14 @@
 #define TEMP_GREEN_PIN 34
 #define TEMP_YELLOW_PIN 35
 #define TEMP_RED_PIN 32
-#define HUMIDITY_GREEN_PIN 13
-#define HUMIDITY_YELLOW_PIN 12
-#define HUMIDITY_RED_PIN 14
-#define LIGHT_GREEN_PIN 2
-#define LIGHT_YELLOW_PIN 3
-#define LIGHT_RED_PIN 4
-#define CO2_GREEN_PIN 3
-#define CO2_YELLOW_PIN 1
+#define HUMIDITY_GREEN_PIN 15
+#define HUMIDITY_YELLOW_PIN 2
+#define HUMIDITY_RED_PIN 4
+#define LIGHT_GREEN_PIN 14
+#define LIGHT_YELLOW_PIN 12
+#define LIGHT_RED_PIN 13
+#define CO2_GREEN_PIN 16
+#define CO2_YELLOW_PIN 17
 #define CO2_RED_PIN 19
 
 void vTaskTraffic(void *pvParameters)

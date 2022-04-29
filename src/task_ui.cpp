@@ -11,9 +11,10 @@
 #define DC_PIN 25
 #define RST_PIN 33
 #define BUSY_PIN 27
-#define BTN_LEFT_UP_PIN 15
-#define BTN_RIGHT_DOWN_PIN 4
-#define BTN_ENTER 2
+#define BTN_LEFT_UP_PIN 1
+#define BTN_RIGHT_DOWN_PIN 3
+#define BTN_ENTER 26
+#define BAT_LVL_PIN 36
 #define ISR_MIN_TIME_PASSED 200
 
 GxEPD2_BW<GxEPD2_290_T94_V2, GxEPD2_290_T94_V2::HEIGHT> display(GxEPD2_290_T94_V2(CS_PIN, DC_PIN, RST_PIN, BUSY_PIN));
@@ -181,7 +182,7 @@ void vTaskUiReceiveData(void *pvParameter)
                         break;
                     }
 
-                    if (xQueueItem.value > max_val)
+                    if (xQueueItem.value >= max_val)
                     {
                         switch (xQueueItem.dataType)
                         {
@@ -206,7 +207,7 @@ void vTaskUiReceiveData(void *pvParameter)
                         }
                     }
 
-                    if (xQueueItem.value < min_val)
+                    if (xQueueItem.value <= min_val)
                     {
                         switch (xQueueItem.dataType)
                         {
@@ -274,6 +275,7 @@ void vTaskUi(void *pvParameter)
     States_Values state_values = Val_MaxTemp;
     EventBits_t eventBits;
     uint8_t min_selected = 1;
+    uint16_t bat_lvl;
     xSemaphore = xSemaphoreCreateMutex();
 
     // Retrieve currently stored user values
@@ -311,6 +313,19 @@ void vTaskUi(void *pvParameter)
     {
         eventBits = xEventGroupWaitBits(xEventGroup, BTN_1_PRESSED | BTN_2_PRESSED | BTN_3_PRESSED | NEW_DATA_BIT | AP_IP_AVAILABLE_BIT, pdTRUE, pdFALSE, portMAX_DELAY);
 
+        if ((eventBits & BTN_1_PRESSED))
+        {
+            Serial.println("BTN1 pressed");
+        }
+        if ((eventBits & BTN_2_PRESSED))
+        {
+            Serial.println("BTN2 pressed");
+        }
+        if ((eventBits & BTN_3_PRESSED))
+        {
+            Serial.println("BTN3 pressed");
+        }
+
         switch (state)
         {
         case State_Home:
@@ -324,6 +339,10 @@ void vTaskUi(void *pvParameter)
             {
                 if (xSemaphoreTake(xSemaphore, portMAX_DELAY) == pdTRUE)
                 {
+                    bat_lvl = analogRead(BAT_LVL_PIN);
+                    measurements.battery_level = map(bat_lvl, 0.0f, 4095.0f, 0, 100);
+                    valueUpdateNeeded |= (1 << 6);
+
                     updateHomeValues(&display, &measurements, valueUpdateNeeded);
 
                     if (temp_status == 1)
